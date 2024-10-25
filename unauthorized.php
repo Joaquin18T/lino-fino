@@ -1,0 +1,1 @@
+<h1>Se te ha negado el acceso</h1>
