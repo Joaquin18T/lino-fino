@@ -16,3 +16,22 @@ SELECT * FROM usuarios;
 -- clave: SENATI123
 UPDATE usuarios SET claveacceso = '$2y$10$j3INO2ee/CtUuzrfomP1neu7yb1wKnydsGepzdHUs9xy0o0.uHT3m' WHERE idusuario = 3;
 
+INSERT INTO perfiles(perfil) VALUES
+	('ADM'),
+	('SUP'),
+	('COL');
+    
+INSERT INTO modulos(modulo) VALUES
+	('jornadas'),
+	('pagos'),
+	('produccion'),
+	('reportes'),
+	('usuarios'),
+	('tareas');
+    
+CALL sp_add_vista(@idvista, 1, 5, 'listar-usuario', '1', 'Usuarios', 'fa-solid fa-wallet');
+SELECT @idvista as vista;
+CALL sp_add_vista(@idvista, 1, 5, 'registrar-usuario', '0', '', '');
+CALL sp_add_vista(@idvista, 1, 5, 'actualizar-usuario', '0', '', '');
+
+CALL sp_listar_vistas();
