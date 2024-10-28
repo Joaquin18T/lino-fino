@@ -1,3 +1,5 @@
+
+USE linofino;
 create table clients (
 	id INT,
 	first_name VARCHAR(50),

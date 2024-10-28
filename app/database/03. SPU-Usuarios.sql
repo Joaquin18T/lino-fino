@@ -8,7 +8,8 @@ CREATE PROCEDURE `spu_usuarios_registrar`
 	IN _idpersona 		INT,
     IN _nomusuario 		VARCHAR(30),
     IN _claveacceso		CHAR(70),
-    IN _perfil 			CHAR(3)
+    IN _perfil 			CHAR(3),
+    IN _idperfil 			INT
 )
 BEGIN
 	-- Declaración de variables
@@ -21,8 +22,8 @@ BEGIN
         END;
 	
     -- Instrucción a ejecutar
-    INSERT INTO usuarios (idpersona, nomusuario, claveacceso, perfil) VALUES
-		(_idpersona, _nomusuario, _claveacceso, _perfil);
+    INSERT INTO usuarios (idpersona, nomusuario, claveacceso, perfil, idperfil) VALUES
+		(_idpersona, _nomusuario, _claveacceso, _perfil, _idperfil);
 	
     -- Retornar un valor por la variable OUT
 	IF existe_error = 1 THEN

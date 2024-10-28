@@ -15,24 +15,32 @@ CREATE TABLE personas
 -- ALTER TABLE personas ADD `direccion` VARCHAR(100) NOT NULL AFTER `dni`;
 -- ALTER TABLE personas ADD `telefono` CHAR(9) NOT NULL AFTER `nombres`;
 
-CREATE TABLE usuarios 
+create TABLE perfiles
+(
+	idperfil 	INT AUTO_INCREMENT PRIMARY KEY,
+    perfil      VARCHAR(30) NOT NULL,
+    nombrecorto CHAR(3) NOT NULL,
+    create_at	DATETIME NOT NULL DEFAULT NOW(),
+    CONSTRAINT uk_perfil UNIQUE(perfil),
+    CONSTRAINT uk_nombrecorto UNIQUE(nombrecorto)
+)ENGINE = INNODB;
+
+create TABLE usuarios 
 (
 	idusuario 		INT AUTO_INCREMENT PRIMARY KEY,
     idpersona 		INT 			NOT NULL,
     nomusuario		VARCHAR(30)		NOT NULL,
     claveacceso 	VARCHAR(70) 	NOT NULL,
     perfil 			CHAR(3) 		NOT NULL, -- ADM | COL | AST
+    idperfil 		INT NOT NULL,
     CONSTRAINT fk_idpersona_usu FOREIGN KEY (idpersona) REFERENCES personas (idpersona),
     CONSTRAINT uk_nomusuario_usu UNIQUE (nomusuario),
-    CONSTRAINT ck_perfil_usu CHECK (perfil IN ('ADM','COL','SUP'))
+    CONSTRAINT ck_perfil_usu CHECK (perfil IN ('ADM','COL','SUP')),
+    CONSTRAINT fk_idperfil_usu FOREIGN KEY (idperfil) REFERENCES perfiles(idperfil)
 )ENGINE = INNODB;
 
-ALTER TABLE usuarios ADD idperfil INT NULL;
 
-ALTER TABLE usuarios MODIFY COLUMN idperfil INT NOT NULL;
-ALTER TABLE usuarios ADD CONSTRAINT fk_idperfil_usu FOREIGN KEY (idperfil) REFERENCES perfiles(idperfil);
-
-CREATE TABLE tareas
+create TABLE tareas
 (
 	idtarea 		INT AUTO_INCREMENT PRIMARY KEY,
     nombretarea	 	VARCHAR(100)	NOT NULL,
@@ -57,7 +65,7 @@ CREATE TABLE jornadas
     CONSTRAINT ck_horas_jor CHECK (horainicio < horatermino)
 )ENGINE = INNODB;
 
-CREATE TABLE detalletareas
+create TABLE detalletareas
 (
 	iddetalle		INT AUTO_INCREMENT PRIMARY KEY,
     idususupervisor	INT 			NOT NULL, -- Encargado de agregar este registro
@@ -100,54 +108,8 @@ CREATE TABLE vistas
     CONSTRAINT uk_ruta	UNIQUE(ruta),
     CONSTRAINT chk_isVisible CHECK (isVisible IN('1','0'))
 )ENGINE = INNODB;
-update VISTAS SET ruta = 'reporte-diario' WHERE idvista = 5;
-SELECT*FROM vistas;
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(null, 'home', '1', 'Inicio','fa-solid fa-wallet');
 
--- Jornadas
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(1, 'listar-jornada', '1', 'Jornadas','fa-solid fa-wallet');
-    
--- Pagos
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(2, 'listar-pagos', '1', 'Pagos','fa-solid fa-wallet');
-    
--- Produccion
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(3, 'listar-produccion', '1', 'Produccion','fa-solid fa-wallet');
-    
--- Reportes
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(4, 'listar-reportes', '1', 'Reportes','fa-solid fa-wallet');
 
--- Usuarios
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(5, 'listar-usuarios', '1', 'Usuario','fa-solid fa-wallet'),
-	(5, 'registrar-usuarios', '0', NULL, NULL),
-	(5, 'actualizar-usuarios', '0', NULL, NULL);
-    
--- Tareas
-INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
-	(6, 'listar-tareas', '1', 'Tareas','fa-solid fa-wallet'),
-	(6, 'registrar-tareas', '0', NULL, NULL);
-    
-CREATE TABLE perfiles
-(
-	idperfil 	INT AUTO_INCREMENT PRIMARY KEY,
-    perfil      VARCHAR(30) NOT NULL,
-    nombrecorto CHAR(3) NOT NULL,
-    create_at	DATETIME NOT NULL DEFAULT NOW(),
-    CONSTRAINT uk_perfil UNIQUE(perfil),
-    CONSTRAINT uk_nombrecorto UNIQUE(nombrecorto)
-)ENGINE = INNODB;
-
-INSERT INTO perfiles (perfil, nombrecorto) VALUES
-	('Administrador', 'ADM'),
-	('Supervisor', 'SUP'),
-	('Colaborador', 'COL');
-
-    
 CREATE TABLE permisos
 (
 	idpermiso 	INT AUTO_INCREMENT PRIMARY KEY,
@@ -159,11 +121,55 @@ CREATE TABLE permisos
     CONSTRAINT uk_idperfil_idvista UNIQUE(idperfil, idvista)
 )ENGINE=INNODB;
 
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(7, 'prueba1', '1', 'SERVER SIDE','fa-solid fa-wallet');
+
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(null, 'home', '1', 'Inicio','fa-solid fa-wallet');
+
+-- Jornadas
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(1, 'listar-jornada', '1', 'Jornadas','fa-solid fa-wallet');
+    
+-- Pagos
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(2, 'listar-pago', '1', 'Pagos','fa-solid fa-wallet');
+    
+-- Produccion
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(3, 'listar-produccion', '1', 'Produccion','fa-solid fa-wallet');
+    
+-- Reportes
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(4, 'listar-reporte', '1', 'Reportes','fa-solid fa-wallet');
+
+-- Usuarios
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(5, 'listar-usuario', '1', 'Usuario','fa-solid fa-wallet'),
+	(5, 'registrar-usuario', '0', NULL, NULL),
+	(5, 'actualizar-usuario', '0', NULL, NULL);
+    
+-- Tareas
+INSERT INTO vistas (idmodulo, ruta, isVisible, texto, icono) VALUES
+	(6, 'listar-tarea', '1', 'Tareas','fa-solid fa-wallet'),
+	(6, 'registrar-tarea', '0', NULL, NULL);
+    
+
+
+INSERT INTO perfiles (perfil, nombrecorto) VALUES
+	('Administrador', 'ADM'),
+	('Supervisor', 'SUP'),
+	('Colaborador', 'COL');
+
+    
+
+
 SELECT*FROM vistas;
 SELECT*FROM permisos;
 
 -- Administrador
 INSERT INTO permisos(idperfil, idvista) VALUES
+(1,11),
 (1, 1),
 (1, 2),
 (1, 3),

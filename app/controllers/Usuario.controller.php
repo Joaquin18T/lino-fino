@@ -73,9 +73,6 @@ if (isset($_GET['operation'])) {
       session_unset();
       header('location:http://localhost/linofino');
       break;
-    case 'getAllCliente':
-      echo json_encode($cliente->getAll());
-      break;
   }
 }
 
@@ -141,7 +138,9 @@ if (isset($_POST['operation'])) {
       $_SESSION['login'] = $sesion;
       echo json_encode($resultados);
       //echo json_encode($_SESSION['login']);
-      
+      break;
+    case 'getAllCliente':
+      echo json_encode($cliente->getAll());
       break;
   }
 }
